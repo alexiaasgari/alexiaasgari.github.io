@@ -1,0 +1,853 @@
+:root{
+  /* Right-side category column width */
+  --panel-width: clamp(280px, 30vw, 420px);
+  --page-pad: 34px;
+
+  /* Top whitespace before the name/title line (matches sketch) */
+  --top-gap: clamp(88px, 13vh, 240px);
+
+  /* This is set dynamically by JS so sticky offsets are always correct */
+  --namebar-height: 78px;
+
+  --menu-size: 58px;
+
+  /* Menu bar (popup) positioning is set by JS to sit under the namebar */
+  --menu-top: 0px;
+  /* Extra sticky offset applied to the work header when the menu is open */
+  --menu-offset: 0px;
+
+  /* Banner carousel height (kept narrow so "download cv" is visible) */
+  --banner-height: clamp(170px, 24vh, 260px);
+
+  --bg: #ffffff;
+  --hero: #cfcfcf;
+  --text: #111111;
+  --muted: rgba(0,0,0,0.55);
+  --line: rgba(0,0,0,0.18);
+  --overlay: rgba(0,0,0,0.55);
+
+  /* "Neuropool" display font (Orbitron) is intentionally limited to:
+     - Alexia Asgari
+     - creative technologist
+  */
+  --font-display: "Orbitron", system-ui, sans-serif;
+
+  /* Match the typography used on the other pages (BootstrapMade template) */
+  --font-body: "Inconsolata", monospace;
+  --font-heading: "Raleway", system-ui, sans-serif;
+
+  /* Backwards-compat: this file previously used --font-ui for body text */
+  --font-ui: var(--font-body);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{ height: 100%; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+a{ color: inherit; }
+
+.content{
+  padding: 0 var(--page-pad);
+  margin-right: var(--panel-width);
+}
+
+/* -----------------------------
+   Menu (top-right only)
+------------------------------ */
+/* Hamburger icon */
+.menu-btn{
+  width: var(--menu-size);
+  height: var(--menu-size);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* tighter vertical spacing */
+}
+
+.menu-btn span{
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: rgba(0,0,0,0.75);
+  margin: 0;
+}
+
+.menu-floating{
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 90;
+  transition: top 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+/* Popup menu (cross-screen bar)
+   - Appears only when clicked
+   - Sits under the namebar (JS sets --menu-top)
+   - Never overlaps the namebar or the work header (work header shifts via --menu-offset)
+*/
+.menu-drop{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--menu-top);
+  background: var(--hero);
+  border-top: 1px dotted rgba(0,0,0,0.28);
+  border-bottom: 1px dotted rgba(0,0,0,0.28);
+  z-index: 66; /* between namebar (70) and work header (60) */
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+body.menu-open .menu-drop{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.menu-drop-inner{
+  /* Align links to the same content column as the rest of the page */
+  margin-right: var(--panel-width);
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: var(--page-pad);
+  display: flex;
+  align-items: baseline;
+  gap: 26px;
+  /* Ensure links never sit under the top-right menu button */
+  padding-right: calc(var(--page-pad) + var(--menu-size) + 18px);
+}
+
+.menu-link{
+  font-family: var(--font-heading);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.35);
+  padding-bottom: 2px;
+}
+
+/* -----------------------------
+   Top whitespace + name/title
+------------------------------ */
+.top-space{ height: var(--top-gap); }
+
+.namebar{
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+}
+
+.namebar-inner{
+  padding-top: 26px;
+  padding-bottom: 26px;
+  transition: padding 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  display: flex;
+  align-items: baseline;
+  gap: clamp(18px, 4vw, 64px);
+  /* Keep clear of the top-right menu button on smaller screens */
+  padding-right: calc(var(--page-pad) + var(--menu-size) + 18px);
+}
+
+body.is-scrolled .namebar-inner{
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/* -----------------------------
+   Project pages (BootstrapMade template)
+   - Offset sticky sidebar text blocks so they never sit under the shared header
+------------------------------ */
+.sticky-content{
+  top: calc(var(--namebar-height) + var(--menu-offset) + 18px);
+}
+
+.brand{
+  font-family: var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: clamp(20px, 2.8vw, 34px);
+  line-height: 1;
+}
+
+.brand-link{ text-decoration: none; }
+
+.tagline{
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  font-size: clamp(12px, 1.6vw, 18px);
+  text-transform: lowercase;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+
+/* -----------------------------
+   INDEX ENTRANCE SEQUENCE
+   - index.html starts with: <body class="index is-loading">
+   - script.js adds phases in order:
+       1) phase-utility   (download cv)
+       2) phase-context   (bio)
+       3) phase-explore   (categories + project grid)
+
+   Identity (name/title + banner) is always visible now (no staged fade-in).
+   - After phase-explore completes, JS removes .is-loading + phase classes
+     so normal interactions (filter fades, scroll condense) behave normally.
+------------------------------ */
+
+@media (prefers-reduced-motion: no-preference){
+
+  /* Initial hidden state (stable layout; no collapsing)
+     Identity is always visible now: brand, tagline, banner do NOT stage in. */
+  body.index.is-loading .cv-link,
+  body.index.is-loading .work-blurb,
+  body.index.is-loading .inline-categories,
+  body.index.is-loading .project-grid{
+    opacity: 0;
+    transform: translateY(14px);
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+
+
+
+  /* Utility + context reveal (a little quicker than identity, still unhurried) */
+  body.index.is-loading .cv-link{
+    transition:
+      opacity 1200ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 1200ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  /* Override the default work-blurb fade duration *only* during entrance */
+  body.index.is-loading .work-blurb{
+    transition:
+      max-height 700ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      opacity 1600ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 1600ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      margin 700ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  /* Explore reveal */
+  body.index.is-loading .inline-categories,
+  body.index.is-loading .project-grid{
+    transition:
+      opacity 1200ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 1200ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  /* Phase toggles */
+
+  body.index.is-loading.phase-utility .cv-link{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  body.index.is-loading.phase-context .work-blurb{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  body.index.is-loading.phase-explore .inline-categories{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Keep filter fade behavior intact even if the user interacts quickly */
+  body.index.is-loading.phase-explore .project-grid{ pointer-events: auto; }
+  body.index.is-loading.phase-explore .project-grid:not(.is-fading){
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+
+  /* Fast-forward (click-to-skip):
+     - Default entrance stays slow.
+     - When JS adds .is-fastforward, reveal transitions run quicker. */
+  body.index.is-loading.is-fastforward .cv-link{
+    transition:
+      opacity 280ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 280ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  body.index.is-loading.is-fastforward .work-blurb{
+    transition:
+      max-height 420ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      opacity 420ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 420ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      margin 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  body.index.is-loading.is-fastforward .inline-categories,
+  body.index.is-loading.is-fastforward .project-grid{
+    transition:
+      opacity 280ms cubic-bezier(0.2, 0.9, 0.16, 1),
+      transform 280ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+
+  body.index.is-loading.is-fastforward .category-panel{
+    transition: transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  }
+}
+
+/* Reduced motion: no staged entrance (everything appears immediately). */
+@media (prefers-reduced-motion: reduce){
+  body.index.is-loading .cv-link,
+  body.index.is-loading .work-blurb,
+  body.index.is-loading .inline-categories,
+  body.index.is-loading .project-grid{
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    transition: none !important;
+  }
+}
+
+
+/* -----------------------------
+   HERO (banner carousel)
+------------------------------ */
+.hero{
+  background: var(--hero);
+}
+
+.carousel{
+  position: relative;
+  width: 100%;
+  height: var(--banner-height);
+  margin: 0;
+}
+
+.carousel-viewport{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* Enables horizontal swipe detection while still allowing vertical page scroll */
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.carousel-track{
+  position: absolute;
+  inset: 0;
+}
+
+.carousel-slide{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.015);
+  transition:
+    opacity 640ms cubic-bezier(0.2, 0.9, 0.16, 1),
+    transform 1200ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  /* Only the active slide should receive clicks */
+  pointer-events: none;
+  z-index: 1;
+}
+
+.carousel-slide.is-active{
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.carousel-slide img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Carousel images: show immediately (no fade) */
+.carousel-slide img{
+  opacity: 1;
+  transition: none;
+}
+
+
+
+
+/* Dot navigation (bottom-left, discrete) */
+.carousel-dots{
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  display: flex;
+  gap: 9px;
+  z-index: 6;
+  pointer-events: auto;
+}
+
+.carousel-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(0,0,0,0.22);
+  opacity: 0.7;
+  cursor: pointer;
+  transition: background 220ms ease, transform 220ms ease, opacity 220ms ease;
+}
+
+.carousel-dot:hover{
+  background: rgba(0,0,0,0.55);
+  opacity: 1;
+}
+
+.carousel-dot.is-active{
+  background: rgba(0,0,0,0.65);
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.carousel-dot:focus-visible{
+  outline: 1px solid rgba(0,0,0,0.5);
+  outline-offset: 4px;
+}
+
+.carousel-btn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: rgba(0,0,0,0.7);
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.carousel-viewport:hover .carousel-btn{ opacity: 1; }
+.carousel-btn.prev{ left: 14px; }
+.carousel-btn.next{ right: 14px; }
+.carousel-btn:hover{ color: rgba(0,0,0,0.9); }
+
+/* -----------------------------
+   WORK
+------------------------------ */
+/* When the menu is open we push the work view down by --menu-offset */
+#work{ scroll-margin-top: calc(var(--namebar-height) + var(--menu-offset) + 16px); }
+
+.work{
+  min-height: calc(100vh - var(--namebar-height));
+  padding-bottom: 80px;
+}
+
+.work-header{
+  position: sticky;
+  top: calc(var(--namebar-height) + var(--menu-offset));
+  z-index: 60;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  border-top: 1px dotted rgba(0,0,0,0.28);
+}
+
+.work-header-inner{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 44px;
+  padding-bottom: 30px;
+  transition: padding 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+body.work-condensed .work-header-inner{
+  padding-top: 16px;
+  padding-bottom: 14px;
+}
+
+.work-header-top{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.cv-link{
+  justify-self: start;
+  font-family: var(--font-heading);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.35);
+  padding-bottom: 2px;
+}
+
+/* Self-description text (sits between CV link and selected category)
+   - Centered above the grid
+   - Collapses away when the work header tightens
+*/
+.work-blurb{
+  margin-top: 34px;
+  /* More whitespace under the description text, per sketch */
+  margin-bottom: 52px;
+  overflow: hidden;
+  max-height: 240px;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 520ms cubic-bezier(0.2, 0.9, 0.16, 1),
+    opacity 260ms ease,
+    transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1),
+    margin 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+/* -----------------------------
+   INLINE CATEGORIES (narrow screens)
+   - Used when the right floating panel is hidden
+   - Stationary (no 3D teeter)
+------------------------------ */
+.inline-categories{
+  display: none;
+  padding-top: 18px;
+  padding-bottom: 8px;
+  /* Center the block above the grid, but keep the text left-aligned */
+  justify-content: center;
+}
+
+.inline-categories .category-list{
+  width: min(100%, 440px);
+  perspective: none;
+  perspective-origin: unset;
+}
+
+.inline-categories .cat-item{
+  /* No teeter transforms on narrow layouts */
+  transform: none !important;
+  transform-style: flat;
+  will-change: auto;
+}
+
+.inline-categories .cat-item.is-dropped,
+.inline-categories .cat-item.is-hidden{
+  /* Inline list never "drops" or hides the active category */
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: block !important;
+}
+
+.work-blurb-text{
+  margin: 0 auto;
+  max-width: 70ch;
+  text-align: center;
+  color: rgba(0,0,0,0.55);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+body.work-condensed .work-blurb{
+  /* This block does NOT remain part of the sticky header once condensed */
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  margin-top: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.selected-category{
+  margin-top: 0;
+  align-self: center;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: clamp(18px, 2.4vw, 32px);
+  line-height: 1;
+  opacity: 0.9;
+  transform: translateY(0);
+  overflow: hidden;
+  max-height: 72px;
+  transition:
+    opacity 260ms ease,
+    transform 260ms ease,
+    max-height 420ms cubic-bezier(0.2, 0.9, 0.16, 1),
+    margin-top 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+body.work-condensed .selected-category{
+  font-size: clamp(16px, 2.1vw, 28px);
+  letter-spacing: 0.11em;
+  margin-top: 12px;
+}
+
+.selected-category.is-hidden{
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  max-height: 0;
+  margin-top: 0;
+}
+
+.work-header-spacer{ width: 1px; height: 1px; }
+
+.project-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 320px));
+  justify-content: center;
+  gap: clamp(28px, 3vw, 54px);
+  padding-top: 56px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 420ms cubic-bezier(0.2, 0.9, 0.16, 1), transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+.project-grid.is-fading{
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.project-card{
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: none;
+  background: #d7d7d7;
+  text-decoration: none;
+}
+
+.project-card img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.9);
+}
+
+.project-overlay{
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 18px;
+  color: #fff;
+}
+
+.project-card:hover .project-overlay{ opacity: 1; }
+
+.project-overlay .title{
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(14px, 1.35vw, 18px);
+  color: #fff;
+}
+
+.project-overlay .year{
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 0.12em;
+  font-size: clamp(16px, 1.7vw, 24px);
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+/* -----------------------------
+   CATEGORY PANEL
+------------------------------ */
+.category-panel{
+  position: fixed;
+  top: 0;
+  left: var(--panel-left, calc(100vw - var(--panel-width)));
+  right: auto;
+  width: var(--panel-width);
+  height: 100vh;
+  z-index: 75;
+  transform: translateX(110%);
+  transition: transform 900ms cubic-bezier(0.2, 0.9, 0.16, 1);
+  pointer-events: none;
+}
+
+body.panel-loaded .category-panel{ transform: translateX(0); }
+
+.panel-inner{
+  height: 100%;
+  /* Start the list visually inside the grey banner zone */
+  padding:
+    calc(var(--top-gap) + var(--namebar-height) + 64px)
+    var(--page-pad)
+    var(--page-pad)
+    max(14px, calc(var(--page-pad) - 14px));
+  perspective: 950px;
+  perspective-origin: 25% 30%;
+  pointer-events: auto;
+}
+
+.category-list{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cat-item{
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: rgba(0,0,0,0.85);
+  /* White outline so the label stays readable on darker banners */
+  text-shadow:
+    -.4px -.4px 0 rgba(255,255,255,0.85),
+     .4px -.4px 0 rgba(255,255,255,0.85),
+    -.4px  .4px 0 rgba(255,255,255,0.85),
+     .4px  .4px 0 rgba(255,255,255,0.85);
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  will-change: transform;
+  font-size: clamp(12px, 1.45vw, 20px);
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color 180ms ease, opacity 220ms ease;
+}
+
+
+
+@supports (-webkit-text-stroke: 1px black){
+  .cat-item{
+    -webkit-text-stroke: 0.7px rgba(255,255,255,0.75);
+    text-shadow: none;
+  }
+}
+body.motion-paused .cat-item{
+  transition: color 180ms ease, opacity 320ms ease, transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+.cat-item:hover{ color: rgba(0,0,0,0.9); }
+
+.cat-item.is-selected{
+  color: rgba(0,0,0,0.92);
+  font-weight: 600;
+}
+
+.cat-item.view-all{
+  font-weight: 600;
+  color: rgba(0,0,0,0.62);
+  margin-top: 12px;
+}
+
+.cat-item.is-dropped{
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, -120px) rotateX(0deg) rotateY(0deg);
+}
+
+.cat-item.is-hidden{ display: none; }
+
+/* -----------------------------
+   Simple pages (About / Contact)
+------------------------------ */
+.simple-page .content{ margin-right: 0; }
+
+/* Simple pages don't reserve space for the right category panel, so the menu bar should not either */
+.simple-page .menu-drop-inner{ margin-right: 0; }
+
+.simple-main{ padding-bottom: 80px; }
+
+.simple-content{
+  padding: 84px var(--page-pad) 0;
+  max-width: 980px;
+}
+
+.simple-title{
+  margin: 0;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.95;
+}
+
+.simple-text{
+  max-width: 62ch;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .carousel-slide,
+  .carousel-btn,
+  .category-panel,
+  .menu-drop{
+    transition: none !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 980px){
+  :root{
+    --panel-width: clamp(260px, 34vw, 360px);
+    --page-pad: 22px;
+    --menu-size: 54px;
+    --banner-height: clamp(160px, 22vh, 240px);
+  }
+  .project-grid{ grid-template-columns: repeat(2, minmax(0, 320px)); }
+}
+
+@media (max-width: 720px){
+  :root{ --panel-width: 0px; }
+  .category-panel{ display: none; }
+  .content{ margin-right: 0; }
+  .inline-categories{ display: flex; }
+  .project-grid{
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .menu-drop-inner{ justify-content: flex-start; }
+}
+
+@media (max-width: 520px){
+  .brand{ font-size: 18px; }
+  .tagline{ font-size: 12px; letter-spacing: 0.06em; }
+  .menu-floating{ top: 16px; right: 16px; }
+}
