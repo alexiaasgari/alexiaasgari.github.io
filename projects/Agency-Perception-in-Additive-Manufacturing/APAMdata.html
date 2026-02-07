@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Group Trends Dashboard</title>
+
+  <!-- Inconsolata for EVERYTHING -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --ink: #222;
+      --muted: #666;
+      --hairline: #e9e9e9;
+
+      --control: #d9d9d9;
+      --a: #f4b6b8;
+      --b: #c6dced;
+      --c: #f2e1a6;
+    }
+
+    *{
+      box-sizing: border-box;
+      font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+    }
+
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .wrap{
+      max-width: 1120px;
+      margin: 22px auto 80px;
+      padding: 0 18px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .meta{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.25;
+      text-align: right;
+      max-width: 520px;
+    }
+
+    .tabs{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0 18px;
+    }
+
+    .tabbtn{
+      border: 1px solid var(--hairline);
+      background: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .tabbtn[aria-selected="true"]{
+      border-color: #bbb;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    }
+
+    .tab{ display:none; }
+    .tab.active{ display:block; }
+
+    .section{
+      margin: 18px 0 22px;
+    }
+
+    .section h2{
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .section .lede{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      max-width: 92ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    @media (min-width: 980px){
+      .grid.two{ grid-template-columns: 1fr 1fr; }
+      .grid.twoWideRight{ grid-template-columns: 1.2fr 0.8fr; }
+      .grid.twoWideLeft{ grid-template-columns: 0.8fr 1.2fr; }
+    }
+
+    .card{
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px 14px 10px;
+    }
+
+    .card h3{
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .subtitle{
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .canvasWrap{ height: 340px; }
+    .canvasWrap.small{ height: 300px; }
+    .canvasWrap.tall{ height: 420px; }
+
+    canvas{
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .stack{
+      display:flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .callout{
+      border-radius: 16px;
+      border: 1px solid var(--hairline);
+      padding: 14px;
+      background: #fff;
+    }
+    .callout h4{
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .callout .big{
+      font-size: 42px;
+      font-weight: 900;
+      margin: 2px 0 8px;
+      line-height: 1;
+    }
+    .callout p{
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.35;
+      color: #333;
+    }
+    .callout ul{
+      margin: 8px 0 0 18px;
+      padding: 0;
+      font-size: 13px;
+      color: #333;
+      line-height: 1.35;
+    }
+    .callout li{ margin: 4px 0; }
+
+    .callout.a{ border-left: 6px solid var(--a); }
+    .callout.b{ border-left: 6px solid var(--b); }
+    .callout.c{ border-left: 6px solid var(--c); }
+    .callout.ctrl{ border-left: 6px solid var(--control); }
+
+    .divider{
+      height: 1px;
+      background: var(--hairline);
+      margin: 14px 0;
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td{
+      border-bottom: 1px solid var(--hairline);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th{
+      font-weight: 900;
+      color: #333;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    tr:last-child td{ border-bottom: none; }
+
+    .pill{
+      display:inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .pill.control{ background: rgba(217,217,217,0.35); }
+    .pill.a{ background: rgba(244,182,184,0.35); }
+    .pill.b{ background: rgba(198,220,237,0.45); }
+    .pill.c{ background: rgba(242,225,166,0.45); }
+
+    .foot{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Experiment Data</h1>
+        <div class="meta" style="text-align:left; max-width: 760px; margin-top:6px;">
+          Groups differ by how much live control they had over <b>speed</b> and <b>extrusion</b> during printing.
+          Everything shown here is an anonymized <b>group mean</b>.
+        </div>
+      </div>
+      <div class="meta">
+        N = Control 3, A 3, B 3, C 4<br/>
+        
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Dashboard tabs">
+      <button class="tabbtn" role="tab" aria-selected="true" data-tab="tab-params">Parameter windows</button>
+      <button class="tabbtn" role="tab" aria-selected="false" data-tab="tab-agency">Autonomy • traits • emotion • confidence</button>
+      <button class="tabbtn" role="tab" aria-selected="false" data-tab="tab-sat">Satisfaction • similarity • process</button>
+    </nav>
+
+    <!-- TAB: PARAMETERS -->
+    <section id="tab-params" class="tab active" role="tabpanel">
+      <div class="section">
+        <h2>Parameter windows</h2>
+        <p class="lede">
+          During live printing, Groups A/B/C were given two <b>unlabeled sliders</b> (speed + extrusion).
+          These charts show the <b>allowed min–max window</b> for each group. The Control group observed only, with parameters on set values.
+        </p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Extrusion Control Window by Group</h3>
+            <p class="subtitle">
+              Range of extrusion multipliers users could reach with the slider (larger window = more potential influence).
+              Dashed line marks the standard value (used by the Control group).
+            </p>
+            <div class="canvasWrap small"><canvas id="chartExtrusion"></canvas></div>
+          </div>
+
+          <div class="card">
+            <h3>Speed Control Window by Group</h3>
+            <p class="subtitle">
+              Range of speed factors users could reach with the slider (larger window = more potential influence).
+              Dashed line marks the standard value (used by the Control group).
+            </p>
+            <div class="canvasWrap small"><canvas id="chartSpeed"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <h3>Window Summary (min → max)</h3>
+          <p class="subtitle">The numeric windows behind the charts above.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Extrusion window</th>
+                <th>Speed window</th>
+              </tr>
+            </thead>
+            <tbody id="paramTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: AGENCY + EMOTION -->
+    <section id="tab-agency" class="tab" role="tabpanel">
+      <div class="section">
+        <h2>Autonomy, traits, emotion, confidence</h2>
+        <p class="lede">
+          Before and after printing, participants were surveyed, asked to state levels of emotion (valence/arousal). After printing, the survey included questions about the experience including self identification among traits and an autonomy ranking.  
+          Replicability confidence reflects how confident participants felt they could reproduce outcomes in future attempts.
+        </p>
+
+        <div class="grid twoWideRight">
+          <div class="card">
+            <h3>Perceived autonomy during the printing interaction</h3>
+            <p class="subtitle">
+              Participants rated how much control/agency they felt during live printing on a 0–100 scale (higher = more autonomy).
+            </p>
+            <div class="canvasWrap small"><canvas id="chartAutonomy"></canvas></div>
+          </div>
+
+          <div class="stack">
+            <div class="callout a">
+              <h4>Any meaningful control changes autonomy—fast</h4>
+              <div class="big">+27.0</div>
+              <ul>
+                <li><b>Control → A</b>: +27.0 points autonomy (≈ +54.0% vs Control mean)</li>
+                <li><b>Control → C</b>: +15.1 points autonomy (even the narrowest range beats no control whatsover)</li>
+              </ul>
+              <div class="divider"></div>
+              <p>
+                Suggestion that feelings of autonomy are correlated to "having a hand" in the outcome.
+              </p>
+            </div>
+
+            <div class="callout b">
+              <h4>There’s a “sufficiency threshold” for autonomy</h4>
+              <p>
+                A and B are effectively tied (A: 76.7, B: 75.7).
+                Once the interface passes “this responds to me,” additional range doesn’t automatically feel like additional agency.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid twoWideLeft" style="margin-top:14px;">
+          <div class="callout b">
+            <h4>Individual difference signal: “Adventurous” predicts autonomy</h4>
+            <div class="big">~16.0</div>
+            <p>
+              Participants with <b>Adventurous ≥ 75</b> reported ~16.0 points higher autonomy than those below that threshold.
+            </p>
+            <ul>
+              <li>Design framing: some makers accept variation (collaboration); others want controllability + repeatability.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Trait self-profile during the printing interaction</h3>
+            <p class="subtitle">
+              Participants used a 0–100 visual analog scale to self-identify across six traits during making. Chart shows group means. 
+            </p>
+            <div class="canvasWrap tall"><canvas id="chartTraitsRadar"></canvas></div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top:14px;">
+          <div class="card">
+            <h3>Change in self-reported emotion from before to after printing</h3>
+            <p class="subtitle">
+              Participants rated valence (pleasantness) and intensity/arousal on a 1–5 scale before printing began and immediately after the printing interaction ended.
+              Lines show mean shift by group.
+            </p>
+            <div class="canvasWrap tall"><canvas id="chartEmotionShift"></canvas></div>
+          </div>
+
+          <div class="card">
+            <h3>Change in confidence from before to after printing</h3>
+            <p class="subtitle">
+              General confidence was rated on the same 1–5 scale as emotion. Bars show mean (after − before).
+            </p>
+            <div class="canvasWrap small"><canvas id="chartConfidenceChange"></canvas></div>
+
+            <div class="divider"></div>
+
+            <h3>Confidence to reproduce outcomes in the future</h3>
+            <p class="subtitle">
+              After printing, participants (except those in the control group) were shown a series of photos, of prints displaying various irregularities due to parameter variations. The participants rated how confident they felt that they could reproduce the outcomes in the photos after their experience printing (0–100). 
+            </p>
+            <div class="canvasWrap small"><canvas id="chartRepConf"></canvas></div>
+                        <p>Notably, Group A and B showed similar confidence levels generally, with Group A gravitating to features that showed more layer delamination, while Group B reflected more confidence in print photos that showed tightly packed precise layers.</p>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: SATISFACTION -->
+    <section id="tab-sat" class="tab" role="tabpanel">
+      <div class="section">
+        <h2>Satisfaction, similarity, process</h2>
+        <p class="lede">
+          These measures were collected after printing, reflecting participants’ evaluation of the design, the resulting print,
+          and the experience of interacting with the printing process.
+        </p>
+
+        <div class="grid twoWideRight">
+          <div class="card">
+            <h3>Satisfaction with the resulting print</h3>
+            <p class="subtitle">
+              After printing, participants selected one option on a 5-point satisfaction scale (from “Extremely dissatisfied” to “Extremely satisfied”).
+              Table shows the distribution of responses within each group.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Extremely dissatisfied</th>
+                  <th>Slightly dissatisfied</th>
+                  <th>Neutral</th>
+                  <th>Slightly satisfied</th>
+                  <th>Extremely satisfied</th>
+                </tr>
+              </thead>
+              <tbody id="printSatTable"></tbody>
+            </table>
+
+            <p class="foot">Dots show response frequency (categories shown directly; no numeric scoring).</p>
+          </div>
+
+          <div class="callout a">
+            <h4>Quality/fidelity and ownership separate</h4>
+            <p>
+              Control + “perfect parameters” reads as higher fidelity in perceived similarity — but the strongest ownership/experience
+              signal appears in process + print satisfaction.
+            </p>
+            <ul>
+              <li><b>Similarity means:</b> Control 3.67, B 3.33, A 3.0, C 2.25</li>
+              <li><b>Group A</b> has the highest process satisfaction (100% “extremely satisfied”) and highest print satisfaction (mean 4.67).</li>
+              <li><b>Group B</b> stays close to Control on similarity while matching A’s autonomy (the “sweet spot” signal).</li>
+            </ul>
+            <div class="divider"></div>
+            <p>
+              Portfolio framing: <b>Control optimizes fidelity</b> (file → factory), while <b>A optimizes authorship</b> (craft → performance).
+            </p>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top:14px;">
+          <div class="card">
+            <h3>Ranked similarity between printed object and designed object</h3>
+            <p class="subtitle">
+              Participants ranked similarity between the original 3D model and the final print on a 5-point scale (from “Very dissimilar” to “Identical”).
+              Table shows the distribution of responses within each group.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Very dissimilar</th>
+                  <th>Slightly dissimilar</th>
+                  <th>Relatively similar</th>
+                  <th>Very similar</th>
+                  <th>Identical</th>
+                </tr>
+              </thead>
+              <tbody id="similarityTable"></tbody>
+            </table>
+
+            <p class="foot">Dots show response frequency (categories shown directly; no numeric scoring).</p>
+          </div>
+
+          <div class="card">
+            <h3>Satisfaction with the printing process</h3>
+            <p class="subtitle">
+              Participants ranked how satisfied they were with the printing process (1–5 scale).
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Extremely dissatisfied</th>
+                  <th>Slightly dissatisfied</th>
+                  <th>Neutral</th>
+                  <th>Slightly satisfied</th>
+                  <th>Extremely satisfied</th>
+                </tr>
+              </thead>
+              <tbody id="processSatTable"></tbody>
+            </table>
+
+            <p class="foot">Dots show response frequency (categories shown directly; no numeric scoring).</p>
+
+            <div class="divider"></div>
+
+            <div class="callout c">
+              <h4>Group C is the “paradox condition”: autonomy ↑, mastery ↓</h4>
+              <ul>
+                <li><b>Autonomy:</b> 64.8 (higher than Control, but lower than A/B)</li>
+                <li><b>Print satisfaction:</b> 3.25 (lowest)</li>
+                <li><b>Similarity:</b> 2.25 (lowest)</li>
+                <li><b>Replicability confidence:</b> 38.2 (≈ 41.0% lower than A/B avg)</li>
+              </ul>
+              <p style="margin-top:10px;">
+                Constrained agency can still feel like agency in the moment — without producing understanding or repeatability.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const DATA = {"groups": ["Control", "A", "B", "C"], "colors": {"Control": "#d9d9d9", "A": "#f4b6b8", "B": "#c6dced", "C": "#f2e1a6"}, "baseline": {"extrusion": 1.0, "speed": 2400.0}, "param": {"Control": {"extrusion": [1.0, 1.0], "speed": [2400.0, 2400.0]}, "A": {"extrusion": [0.5, 1.5], "speed": [480.0, 7200.0]}, "B": {"extrusion": [0.425, 1.275], "speed": [320.0, 4800.0]}, "C": {"extrusion": [0.35, 1.05], "speed": [160.0, 2400.0]}}, "autonomy": [49.67, 76.67, 75.67, 64.75], "traits_labels": ["Curious", "Strategic", "Results-Focused", "Adventurous", "Meticulous", "Collaborative"], "traits_means": {"Curious": [70.0, 86.33, 64.0, 91.75], "Strategic": [76.67, 67.0, 62.33, 46.25], "Results-Focused": [80.33, 69.33, 68.0, 68.25], "Adventurous": [51.67, 60.67, 59.33, 86.25], "Meticulous": [86.33, 66.33, 65.33, 35.0], "Collaborative": [45.67, 70.67, 58.33, 62.5]}, "emotion_shift": {"Control": {"pre": {"valence": 3.67, "intensity": 3.67}, "post": {"valence": 4.33, "intensity": 3.0}, "delta": {"valence": 0.5, "intensity": 0.33}}, "A": {"pre": {"valence": 4.0, "intensity": 4.33}, "post": {"valence": 5.0, "intensity": 6.33}, "delta": {"valence": 1.0, "intensity": 2.0}}, "B": {"pre": {"valence": 4.0, "intensity": 4.33}, "post": {"valence": 4.67, "intensity": 5.67}, "delta": {"valence": 0.67, "intensity": 1.33}}, "C": {"pre": {"valence": 3.75, "intensity": 5.5}, "post": {"valence": 4.5, "intensity": 5.0}, "delta": {"valence": 0.75, "intensity": -0.5}}}, "conf_change": [1.67, 3.0, 3.0, 1.5], "rep_conf": {"A": 66.67, "B": 63.47, "C": 38.25}, "sat_rows": [{"group": "Control", "design": 4.33, "print": 4.33, "delta": 0.0, "pct": 0.0}, {"group": "A", "design": 4.33, "print": 4.67, "delta": 0.33, "pct": 7.7}, {"group": "B", "design": 4.33, "print": 3.67, "delta": -0.67, "pct": -15.4}, {"group": "C", "design": 4.25, "print": 3.25, "delta": -1.0, "pct": -23.5}], "similarity": [3.67, 3.0, 3.33, 2.25], "process": [4.33, 5.0, 4.33, 4.5], "n_by_group": {"Control": 3, "A": 3, "B": 3, "C": 4}, "insights": {"autonomy_diff_a": 27.0, "autonomy_rel_lift_a": 54.0, "autonomy_diff_c": 15.1, "autonomy_a_mean": 76.7, "autonomy_b_mean": 75.7, "similarity_means": {"Control": 3.67, "A": 3.0, "B": 3.33, "C": 2.25}, "process_pct_a": 100.0, "rep_drop_pct_c_vs_ab": 41.0, "rep_mean_c": 38.2, "rep_mean_ab": 65.1, "advent_aut_diff": 16.0, "advent_high_mean": 76.4, "advent_low_mean": 60.4, "intensity_change_a": 2.0, "intensity_change_c": -0.5, "confidence_change_a": 3.0, "confidence_change_b": 3.0, "confidence_change_control": 1.67, "confidence_change_c": 1.5, "similarity_identical_pct_control": 67.0, "similarity_identical_pct_b": 67.0, "similarity_identical_pct_a": 0.0, "similarity_identical_pct_c": 0.0}};
+
+    // Force Chart.js to use Inconsolata
+    Chart.defaults.font.family = '"Inconsolata", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace';
+    Chart.defaults.color = '#222';
+    const gridColor = '#e9e9e9';
+
+    function rgba(hex, a){
+      const h = hex.replace('#','');
+      const r = parseInt(h.substring(0,2),16);
+      const g = parseInt(h.substring(2,4),16);
+      const b = parseInt(h.substring(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    // Tabs
+    const btns = Array.from(document.querySelectorAll('.tabbtn'));
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        btns.forEach(b => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === tabId));
+      });
+    });
+
+    // Small helpers
+    const groupPill = (g) => {
+      const cls = g === 'Control' ? 'control' : g.toLowerCase();
+      return `<span class="pill ${cls}">${g}</span>`;
+    };
+
+    // Parameter table
+    const paramTbody = document.getElementById('paramTable');
+    paramTbody.innerHTML = DATA.groups.map(g => {
+      const p = DATA.param[g];
+      return `
+        <tr>
+          <td>${groupPill(g)}</td>
+          <td>${p.extrusion[0]} → ${p.extrusion[1]}</td>
+          <td>${p.speed[0]} → ${p.speed[1]}</td>
+        </tr>`;
+    }).join('');
+
+    // Satisfaction + similarity distributions (categorical; no numeric scoring)
+    const SAT = {
+      groups: ['Control','A','B','C'],
+      print: {
+        levels: ['Extremely dissatisfied','Slightly dissatisfied','Neutral','Slightly satisfied','Extremely satisfied'],
+        counts: {
+          Control: [0,0,0,2,1],
+          A:       [0,0,0,1,2],
+          B:       [0,1,1,1,1],
+          C:       [0,0,0,2,1]
+        }
+      },
+      process: {
+        levels: ['Extremely dissatisfied','Slightly dissatisfied','Neutral','Slightly satisfied','Extremely satisfied'],
+        counts: {
+          Control: [0,0,0,2,1],
+          A:       [0,0,0,0,3],
+          B:       [0,1,0,1,2],
+          C:       [0,0,0,2,1]
+        }
+      },
+      similarity: {
+        levels: ['Very dissimilar','Slightly dissimilar','Relatively similar','Very similar','Identical'],
+        counts: {
+          Control: [0,0,1,0,2],
+          A:       [0,0,3,0,0],
+          B:       [0,3,1,0,0],
+          C:       [0,1,0,0,2]
+        }
+      }
+    };
+
+    function dotRun(n, color){
+      if (!n) return '—';
+      const dots = '●'.repeat(n);
+      return `<span style="color:${color}; font-weight:900; letter-spacing:2px;">${dots}</span>`;
+    }
+
+    function fillDistTable(tbodyId, levels, countsByGroup){
+      const tbody = document.getElementById(tbodyId);
+      if(!tbody) return;
+      tbody.innerHTML = SAT.groups.map(g => {
+        const cls = g === 'Control' ? 'control' : g.toLowerCase();
+        const row = countsByGroup[g] || [];
+        const cells = levels.map((_, i) => `<td>${dotRun(row[i] || 0, DATA.colors[g])}</td>`).join('');
+        return `<tr><td><span class="pill ${cls}">${g}</span></td>${cells}</tr>`;
+      }).join('');
+    }
+
+    // Fill the categorical tables on the Satisfaction tab
+    fillDistTable('printSatTable', SAT.print.levels, SAT.print.counts);
+    fillDistTable('processSatTable', SAT.process.levels, SAT.process.counts);
+    fillDistTable('similarityTable', SAT.similarity.levels, SAT.similarity.counts);
+
+    // Extrusion window chart (floating bars)
+    const extrusionData = DATA.groups.map(g => DATA.param[g].extrusion);
+    new Chart(document.getElementById('chartExtrusion'), {
+      type: 'bar',
+      data: {
+        labels: DATA.groups,
+        datasets: [
+          {
+            label: 'Allowed extrusion window',
+            data: extrusionData,
+            backgroundColor: DATA.groups.map(g => rgba(DATA.colors[g], 0.65)),
+            borderColor: DATA.groups.map(g => rgba(DATA.colors[g], 1)),
+            borderWidth: 1,
+            borderRadius: 8,
+            barThickness: 22
+          },
+          {
+            type: 'line',
+            label: 'Standard value',
+            data: DATA.groups.map(g => ({ x: DATA.baseline.extrusion, y: g })),
+            borderColor: '#777',
+            borderDash: [6,6],
+            pointRadius: 0,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                if (ctx.dataset.type === 'line') return `Standard: ${DATA.baseline.extrusion}`;
+                const v = ctx.raw;
+                return `Window: ${v[0]} → ${v[1]}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            title: { display: true, text: 'Extrusion multiplier' }
+          },
+          y: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Speed window chart
+    const speedData = DATA.groups.map(g => DATA.param[g].speed);
+    new Chart(document.getElementById('chartSpeed'), {
+      type: 'bar',
+      data: {
+        labels: DATA.groups,
+        datasets: [
+          {
+            label: 'Allowed speed window',
+            data: speedData,
+            backgroundColor: DATA.groups.map(g => rgba(DATA.colors[g], 0.65)),
+            borderColor: DATA.groups.map(g => rgba(DATA.colors[g], 1)),
+            borderWidth: 1,
+            borderRadius: 8,
+            barThickness: 22
+          },
+          {
+            type: 'line',
+            label: 'Standard value',
+            data: DATA.groups.map(g => ({ x: DATA.baseline.speed, y: g })),
+            borderColor: '#777',
+            borderDash: [6,6],
+            pointRadius: 0,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                if (ctx.dataset.type === 'line') return `Standard: ${DATA.baseline.speed}`;
+                const v = ctx.raw;
+                return `Window: ${v[0]} → ${v[1]}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            title: { display: true, text: 'Speed factor (unlabeled slider units)' }
+          },
+          y: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Autonomy chart
+    new Chart(document.getElementById('chartAutonomy'), {
+      type: 'bar',
+      data: {
+        labels: DATA.groups,
+        datasets: [{
+          data: DATA.autonomy,
+          backgroundColor: DATA.groups.map(g => rgba(DATA.colors[g], 0.7)),
+          borderColor: DATA.groups.map(g => rgba(DATA.colors[g], 1)),
+          borderWidth: 1,
+          borderRadius: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            min: 0, max: 100,
+            grid: { color: gridColor },
+            ticks: { stepSize: 10 }
+          }
+        }
+      }
+    });
+
+    // Traits radar
+    const traitDatasets = DATA.groups.map(g => {
+      const values = DATA.traits_labels.map(t => DATA.traits_means[t][DATA.groups.indexOf(g)]);
+      return {
+        label: g,
+        data: values,
+        backgroundColor: rgba(DATA.colors[g], 0.22),
+        borderColor: rgba(DATA.colors[g], 1),
+        pointBackgroundColor: rgba(DATA.colors[g], 1),
+        pointRadius: 3,
+        borderWidth: 2
+      };
+    });
+    new Chart(document.getElementById('chartTraitsRadar'), {
+      type: 'radar',
+      data: {
+        labels: DATA.traits_labels,
+        datasets: traitDatasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' }
+        },
+        scales: {
+          r: {
+            min: 0, max: 100,
+            ticks: { stepSize: 20, showLabelBackdrop: false },
+            grid: { color: gridColor },
+            angleLines: { color: gridColor },
+            pointLabels: { font: { size: 12 } }
+          }
+        }
+      }
+    });
+
+    // Emotion shift
+// Emotion shift
+const emotionDatasets = DATA.groups.map(g => {
+  const s = DATA.emotion_shift[g];
+  const c = DATA.colors[g];
+  return {
+    type: 'line',
+    label: g,
+    data: [
+      { x: s.pre.valence,  y: s.pre.intensity,  phase: 'Pre'  },
+      { x: s.post.valence, y: s.post.intensity, phase: 'Post' }
+    ],
+    showLine: true,
+    borderColor: rgba(c, 1),
+    backgroundColor: rgba(c, 0.35),
+
+    // Pre = hollow circle, Post = solid circle
+    pointBackgroundColor: [rgba(c, 0), rgba(c, 1)],
+    pointBorderColor: rgba(c, 1),
+    pointBorderWidth: 2,
+
+    pointRadius: [6, 6],
+    pointHoverRadius: [7, 7],
+    borderWidth: 2
+  };
+});
+
+new Chart(document.getElementById('chartEmotionShift'), {
+  type: 'scatter',
+  data: { datasets: emotionDatasets },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          title: (items) => items?.[0]?.dataset?.label || '',
+          label: (ctx) => {
+            const phase = ctx.raw?.phase || (ctx.dataIndex === 0 ? 'Pre' : 'Post');
+            const x = ctx.parsed.x;
+            const y = ctx.parsed.y;
+            return `${phase} — Valence: ${x.toFixed(1)}, Intensity: ${y.toFixed(1)}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Valence (pleasantness)' },
+        suggestedMin: 1, suggestedMax: 5,
+        ticks: { stepSize: 1 }
+      },
+      y: {
+        title: { display: true, text: 'Intensity / arousal' },
+        suggestedMin: 1, suggestedMax: 5,
+        ticks: { stepSize: 1 }
+      }
+    }
+  }
+});
+
+
+
+    // Confidence change
+    new Chart(document.getElementById('chartConfidenceChange'), {
+      type: 'bar',
+      data: {
+        labels: DATA.groups,
+        datasets: [{
+          data: DATA.conf_change,
+          backgroundColor: DATA.groups.map(g => rgba(DATA.colors[g], 0.7)),
+          borderColor: DATA.groups.map(g => rgba(DATA.colors[g], 1)),
+          borderWidth: 1,
+          borderRadius: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            grid: { color: gridColor },
+            title: { display: true, text: 'Δ confidence (after − before)' },
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+
+    // Replicability confidence
+    new Chart(document.getElementById('chartRepConf'), {
+      type: 'bar',
+      data: {
+        labels: ['A','B','C'],
+        datasets: [{
+          data: ['A','B','C'].map(g => DATA.rep_conf[g]),
+          backgroundColor: ['A','B','C'].map(g => rgba(DATA.colors[g], 0.7)),
+          borderColor: ['A','B','C'].map(g => rgba(DATA.colors[g], 1)),
+          borderWidth: 1,
+          borderRadius: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            min: 0, max: 100,
+            grid: { color: gridColor },
+            ticks: { stepSize: 10 }
+          }
+        }
+      }
+    });
+
+    </script>
+</body>
+</html>
