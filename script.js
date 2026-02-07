@@ -170,7 +170,7 @@
       year: 2022,
       link: "projects/Robotic-Dialogue/Robotic-Dialogue.html",
       thumbnail: "projects/Robotic-Dialogue/images/thumbnail.jpg",
-      featuredImage: "projects/Robotic-Dialogue/images/banner.jpg",
+      featuredImage: "projects/Robotic-Dialogue/images/banner.JPG",
       featured: true,
       categories: ["Research-Driven", "Non-Predictive Robotics", "Material Exploration"]
     },
