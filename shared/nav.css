@@ -1,0 +1,190 @@
+/* Shared nav styles.
+   Matches the home page menu look, but uses CSS variable fallbacks so it can be dropped onto legacy pages.
+*/
+
+.menu-btn{
+  width: var(--menu-size, 58px);
+  height: var(--menu-size, 58px);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.menu-btn span{
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: rgba(0,0,0,0.75);
+  margin: 0;
+}
+
+.menu-floating{
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1000;
+  transition: top 420ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+.menu-drop{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--menu-top, 0px);
+  background: var(--hero, #cfcfcf);
+  border-top: 1px dotted rgba(0,0,0,0.28);
+  border-bottom: 1px dotted rgba(0,0,0,0.28);
+  /*
+    Keep this *between* the namebar and the work header on the landing page,
+    so the dropdown never blocks the name/title line.
+    (Menu button stays above everything.)
+  */
+  z-index: 66;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 520ms cubic-bezier(0.2, 0.9, 0.16, 1);
+}
+
+body.menu-open .menu-drop{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* On pages where we inject a shared namebar, keep the dropdown comfortably above page content. */
+body.aa-shared-header .menu-drop{
+  z-index: 900;
+}
+
+.menu-drop-inner{
+  margin-right: var(--panel-width, 0px);
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: var(--page-pad, 34px);
+  display: flex;
+  align-items: baseline;
+  gap: 26px;
+  padding-right: calc(var(--page-pad, 34px) + var(--menu-size, 58px) + 18px);
+}
+
+.menu-link{
+  /* Match the BootstrapMade pages: Raleway for headings/UI */
+  font-family: var(--aa-font-heading, "Raleway", system-ui, sans-serif);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.35);
+  padding-bottom: 2px;
+}
+
+/* ----------------------------------------------------------
+   Shared header (injected by shared/nav.js on non-index pages)
+---------------------------------------------------------- */
+body.aa-shared-header .aa-namebar{
+  position: sticky;
+  top: 0;
+  /* Below the hamburger button (z-index 1000), above page content */
+  z-index: 950;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+}
+
+body.aa-shared-header .aa-namebar-inner{
+  padding: 18px var(--aa-page-pad, 34px);
+  display: flex;
+  align-items: baseline;
+  gap: clamp(18px, 4vw, 64px);
+  /* Keep clear of the top-right menu button on smaller screens */
+  padding-right: calc(var(--aa-page-pad, 34px) + var(--menu-size, 58px) + 18px);
+}
+
+body.aa-shared-header .aa-namebar .brand{
+  font-family: var(--aa-font-display, "Orbitron", system-ui, sans-serif);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: clamp(18px, 2.6vw, 30px);
+  line-height: 1;
+}
+
+body.aa-shared-header .aa-namebar .brand-link{ text-decoration: none; }
+
+body.aa-shared-header .aa-namebar .tagline{
+  font-family: var(--aa-font-display, "Orbitron", system-ui, sans-serif);
+  letter-spacing: 0.08em;
+  font-size: clamp(12px, 1.5vw, 16px);
+  text-transform: lowercase;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------
+   Project image lightbox (enabled by shared/nav.js in /projects)
+---------------------------------------------------------- */
+body.aa-lightbox-enabled main img.aa-lightbox-target{
+  cursor: zoom-in;
+}
+
+.aa-lightbox-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.86);
+}
+
+body.aa-lightbox-open .aa-lightbox-overlay{
+  display: flex;
+}
+
+.aa-lightbox-img{
+  max-width: 96vw;
+  max-height: 92vh;
+  object-fit: contain;
+}
+
+.aa-lightbox-close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.aa-lightbox-close:hover{
+  background: rgba(255,255,255,0.16);
+}
+
+/* ----------------------------------------------------------
+   Project pages: offset BootstrapMade sticky sidebar blocks
+   so they don't sit under the shared header/menu.
+---------------------------------------------------------- */
+
+/*
+  BootstrapMade templates use .sticky-content (position: sticky).
+  Because we inject a sticky header (#nameBar) with a higher z-index,
+  we must offset the sidebar blocks by the header + (open) menu height.
+
+  nav.js keeps --aa-sticky-top up to date.
+*/
+body.aa-shared-header .sticky-content{
+  top: var(--aa-sticky-top, 96px) !important;
+}
