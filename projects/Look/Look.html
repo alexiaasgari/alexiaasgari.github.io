@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Asgari.Look</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="../../assets/img/favicon.png" rel="icon">
+  <link href="../../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inconsolata:wght@400;500;600;700&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="../../assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: MyPortfolio - v4.9.1
+  * Template URL: https://bootstrapmade.com/myportfolio-bootstrap-portfolio-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <link rel="stylesheet" href="../../shared/nav.css" />
+</head>
+
+<body>
+
+  <div id="sharedNav"></div>
+
+  <main id="main">
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          <div class="col-md-10" data-aos="fade-up">
+            <h2>Look</h2>
+            <p class="mb-4"><span class="text-muted">Fall 2020 | Professor Panagiotis Michalatos
+               
+              </span></p>
+            <p>“Look” was produced as one of many weekly projects for my Coding in Design Course. I developed a series of C# scripts in Grasshopper to design a façade for a building that both provided public space and had consciousness of the objects surrounding it. I embraced non-predictive design methods to develop a dynamic architectural design.</p>
+            </div>
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-7" data-aos="fade-up">
+              <img src="images/Image_01.jpg" alt="Image" class="img-fluid">
+              <img src="images/Image_03.jpg" alt="Image" class="img-fluid">
+
+
+              
+
+            </div>
+            <div class="col-md-4 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="h3">Design</h3>
+                <!-- <p class="mb-4"><span class="text-muted">Design</span></p> -->
+
+                <div class="mb-5">
+                  <p> Imagining a sculpture of high importance, that was subject to change in positioning, I developed a series of C# scripts in Grasshopper to design a façade for a building. The façade design was titled “Look” for the way it commanded the interior occupants to view the sculpture and did not allow them to view the neighboring building, accounting for solidity on a shared wall. Exterior viewers have an enhanced experience of the sculpture as the building serves as a backdrop to highlight it. The façade design features an adjustable dome at the base level, allowing respite to those who chose to go outside and enjoy the sculpture.</p>
+
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-7" data-aos="fade-up">
+              <img src="images/Grasshopper_01.jpg" alt="Image" class="img-fluid">
+              <img src="images/Image_06.jpg" alt="Image" class="img-fluid">
+              <img src="images/Image_05.jpg" alt="Image" class="img-fluid">
+
+              
+              
+
+            </div>
+            <div class="col-md-4 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="h3">Script</h3>
+                <!-- <p class="mb-4"><span class="text-muted">Design</span></p> -->
+
+                <div class="mb-5">
+                  <p>The script was assembled in 3 units, α β γ, each having their own C# script for clarity of concept. The units can be arranged in different orders for varying results.</p>
+
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-7" data-aos="fade-up">
+              <img src="images/Grasshopper_02.jpg" alt="Image" class="img-fluid">
+              <img src="images/Gif_02.gif" alt="Image" class="img-fluid">
+              <img src="images/Image_02.jpg" alt="Image" class="img-fluid">
+
+
+              <p>.</p>
+              <p>Annotated Code:</p>
+              <p>List<Point3d> pt = new List <Point3d>(); <span class="text-muted"> // original mesh point list</p>
+              
+              <p>List<Vector3d> ns = new List <Vector3d>(); <span class="text-muted"> // original mesh vectors list</p>
+              <p>double boundaryXmin = 100.0;</p>  
+              <p>double boundaryYmin = 100.0;</p>  
+              <p>double boundaryXmax = -100.0;</p>
+              <p>double boundaryYmax = -100.0;</p>
+              <p>foreach (Point3d bp in b_points)</p>
+              <p>{</p>
+              <p>if (bp.X < boundaryXmin) boundaryXmin = bp.X;</p>
+              <p>if (bp.X > boundaryXmax) boundaryXmax = bp.X;</p>
+              <p>if (bp.Y < boundaryYmin) boundaryYmin = bp.Y;</p>
+              <p>if (bp.Y > boundaryYmax) boundaryYmax = bp.Y;</p>
+              <p>}</p>
+              <p><span class="text-muted"> //this section defines the boundary points in which the dome exists </p>
+              <p>for (int i = 0; i < mesh.Vertices.Count; ++i)</p>
+              <p>{</p>
+              <p>Point3d p = mesh.Vertices[i];</p>
+              <p>pt.Add(p);</p>
+              <p>Vector3d dp = new Vector3d(0, 0, 0);</p>
+              <p><span class="text-muted">//here the list of vertices of mesh faces and normals of those mesh faces are used to define a new
+                distance vertex</p>
+              <p>if (p.X > boundaryXmin && p.X < boundaryXmax && p.Y > boundaryYmin && p.Y < boundaryYmax
+                && p.Z < refptZ + 3000 && p.Z != 0)</p>
+              <p>{</p>
+              <p>Vector3d normalV = mesh.Normals[i];</p>
+              <p>dp.X = normalV.X * shiftdomeX;</p>
+              <p>dp.Y = normalV.Y * shiftdomeY;</p>
+              <p>dp.Z = normalV.Z * shiftdomeZ * -1;</p>
+              <p>}</p>
+              <p><span class="text-muted">// within those previously defined dome boundaries, the magnitude of the distance vectors is controlled
+                by the shiftdome variables</p>
+              <p><span class="text-muted">// the shift dome variables are isolated by x, y, z in order to allow irregular movement of the dome,
+                straying from the standard sphere</p>
+              <p>ns.Add(dp);</p>
+              <p>mesh.Vertices.SetVertex(i, p + dp);</p>
+              <p><span class="text-muted">// the new normals are now the changed distance vectors</p>
+              <p><span class="text-muted">// these normals are applied to each face in the list (within boundary points)to move the coordinate
+                along that vertex</p>
+              <p>}</p>
+              <p>A = pt;</p>
+              <p>B = ns;</p>
+              <p>C = mesh;</p>
+      
+      
+      
+             
+
+            </div>
+            <div class="col-md-4 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="h3"></h3>
+                <p class="mb-4"><span class="text-muted">{α}. The Shape Modifier</span></p>
+
+                <div class="mb-5">
+                  <p>Design Intention:</p>
+                  <p>Transformation of a Dome</p>
+                  <p>
+                    By adjustments dimension of the spherical void on the base of the rectangle, the interior space is
+                    transformed, from creating enclosure to increasing height. When overlap occurs and the sphere-turned ellipsoid
+                    crosses the bounds of the box, a new external silhouette is created.</p>
+                    <p>Explanation of Process:</p>
+                    <p>I define an inner boundary which contained within 4 points, which will define the space I am adjusting by
+                      referencing only points contained within the boundary.
+                      I separate the X, Y, and z adjustments rather than simply adjusting all at once as I want the potential for
+                      irregularity in form, expanding from the spherical shape in origin. Based on these selected points I shift
+                      the normal to adjust the positioning of the points hence adjusting the dimensions of the space.</p>
+
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="site-section pb-0">
+          <div class="container">
+            <div class="row align-items-stretch">
+        <div class="col-md-10 ml-auto" data-aos="fade-up">
+
+
+          </div>      
+          </div>
+          </div>
+          </div>
+    </section>
+
+
+   
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-7" data-aos="fade-up">
+              <img src="images/Grasshopper_03.jpg" alt="Image" class="img-fluid">
+              <img src="images/Gif_01.gif" alt="Image" class="img-fluid">
+              <img src="images/Image_04.jpg" alt="Image" class="img-fluid">
+              <p>.</p>
+
+              <p>Annotated Code:</p>
+              <p>List<Point3d> pt = new List <Point3d>(); <span class="text-muted"> // original mesh point list</p>
+              
+              <p>List<Vector3d> ns = new List <Vector3d>(); <span class="text-muted"> // original mesh vectors list</p>
+              <p>List <int> cullingfaces = new List <int> ();<span class="text-muted"> //List of faces that will be deleted</p>
+              
+              <p>for (int i = 0; i < mesh.Faces.Count; ++i)</p>  
+              <p>{</p>  
+              <p>int V1 = mesh.Faces[i].A;</p>
+              <p>int V2 = mesh.Faces[i].B;</p>
+              <p>int V3 = mesh.Faces[i].C;</p>
+              <p>Point3d p1 = mesh.Vertices[V1];</p>
+              <p>Point3d p2 = mesh.Vertices[V2];</p>
+              <p>Point3d p3 = mesh.Vertices[V3];</p>
+              <p>Point3d pcen = (p1 + p2 + p3) / 3.0;</p>
+      
+              <p><span class="text-muted">// the vertices are defined as points, which allows those points to be used to create an average to find a
+                center point of each face </p>
+              <p>for (int i = 0; i < mesh.Vertices.Count; ++i)</p>
+              <p><span class="text-muted">// this condition ensures the deletion will only occur on faces with a central coordinate value greater
+                than 3 in the X direction and greater than 10 in the Z direction, to avoid creating windows that would
+                theoretically be against a neighboring building </p>
+              <p>{</p>
+              <p>double dist = pcen.DistanceTo(interestpt);</p>
+              <p>if (dist < 5)</p>
+              <p>{</p>
+              <p>cullingfaces.Add(i);</p>
+              <p>}</p>
+              <p><span class="text-muted">// if the face is within 5 mm of the interest point it will be added to the culling list</p>
+              <p>else if (dist < 10 && i % 2 == 0)</p>
+              <p>{</p>
+              <p>cullingfaces.Add(i);</p>
+              <p>}</p>
+              <p></p>
+              <p></p>
+              <p>}</p>
+              <p><span class="text-muted">//if the face is within 10 mm of the interest point, every other one (each even numbered one) will be
+                included in the culling list</p>
+              <p>else if (dist < 19 && i % 4 == 0)</p>
+              <p>{</p>
+              <p>cullingfaces.Add(i);</p>
+              <p>}</p>
+              <p><span class="text-muted">//if the face is within 10 mm of the interest point, every 4th point will be added to the culling list.
+      </p>
+                <p>}</p>
+              <p><span class="text-muted">// this sectioning of distances to allow categories of less deletion creates an appearance of a gradient</p>
+              <p>}</p>
+              <p>mesh.Faces.DeleteFaces(cullingfaces);</p>
+              <p><span class="text-muted">// the faces in the culling list are deleted from the mesh to create new windows</p>
+              <p>A = mesh;<span class="text-muted">// the newly adjusted mesh is exported</span></p>
+      
+             
+
+            </div>
+            <div class="col-md-4 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="h3"></h3>
+                <p class="mb-4"><span class="text-muted">{β}. The Face Culling Scheme</span></p>
+
+                <div class="mb-5">
+                  <p>Design Intention:</p>
+                  <p>Panel Elimination Near Interest Point</p>
+                    <p>In predetermined steps, the existing mesh faces become more and more sparse to the point of
+                      completely disappearing at the interest point. This is meant to model a window organization which
+                      highlights a point of interest, while ensuring one of the faces is entirely unchanged as it theoretically
+                      would be a face that backed to a solid (other building)</p>
+                      <p>Explanation of Process:</p>
+                    <p>I created a new list of faces which I plan to remove (the windows) out of the original mesh which meet a
+                      series of conditions. Using the central point (avg of 3 vertices) as a reference for distance of each face, I
+                      separate faces into 3 categories/conditions</p>
+                    <p>1. within 5 mm of the interest point -
+                      to which I added all the faces to the culling list</p>
+                    <p>2. within 10 mm of the interest point -
+                      to which I added every other face to the list</p>
+                    <p>3. within 20 mm of the interest point -
+                        to which I added every 4th face to the list
+                        All faces in that culling list are then deleted.</p>
+                  
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="site-section pb-0">
+          <div class="container">
+            <div class="row align-items-stretch">
+        <div class="col-md-10 ml-auto" data-aos="fade-up">
+          
+
+          </div>      
+          </div>
+          </div>
+          </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-7" data-aos="fade-up">
+              <img src="images/Grasshopper_04.jpg" alt="Image" class="img-fluid">
+
+              <p>Annotated Code:</p>
+              <p>List<Point3d> pt = new List <Point3d>(); <span class="text-muted"> // original mesh point list</p>
+              
+              <p>List<Vector3d> ns = new List <Vector3d>(); <span class="text-muted"> // original mesh vectors list</p>
+              <p>List <int> newfaces = new List <int> ();<span class="text-muted"> // list of new faces which will be created as aesthically driven
+                panels</p>
+              <p>List <Point3d> newpoints = new List <Point3d> ();<span class="text-muted"> // list of new points used as vertices to create new
+              faces</p>
+              <p>Mesh newMesh = new Mesh(); <span class="text-muted"> // as these new panels are of a different material, they are added to
+                the design as a new mesh rather than to the original mesh</p>
+              
+              <p>for (int i = 0; i < mesh.Faces.Count; ++i)</p>  
+              <p>{</p>  
+              <p>int V1 = mesh.Faces[i].A;</p>
+              <p>int V2 = mesh.Faces[i].B;</p>
+              <p>int V3 = mesh.Faces[i].C;</p>
+              <p>Point3d p1 = mesh.Vertices[V1];</p>
+              <p>Point3d p2 = mesh.Vertices[V2];</p>
+              <p>Point3d p3 = mesh.Vertices[V3];</p>
+              <p>Point3d pcen = (p1 + p2 + p3) / 3.0;</p>
+      
+              <p><span class="text-muted">// the vertices are defined as points, which allows those points to be used to create an average to find a
+                center point of each face</p>
+              <p>Point3d pcenoffset = (pcen * proximitytopcen + interestpt) / (1 + proximitytopcen);</p>
+              <p><span class="text-muted">// a new point type is created, based on the center point of each face as well as the interest point.</p>
+              <p><span class="text-muted">// a new variable "proximitytopcen" controls the distance of the new point from the face by adjusting
+                the averaging proportion (giving the original face center point a greater percentage impact than the
+                interest point on the new point</p>
+              <p>if (pcen.X > 3)</p>
+              <p><span class="text-muted"> // this condition ensures the deletion will only occur on faces with a central coordinate value greater
+                than 3 in the X direction as to not interfere with the neighboring building </p>
+              <p>{</p>
+              <p>double dist = pcenoffset.DistanceTo(interestpt);</p>
+              <p>if (dist < 100 && dist > 0.1 && mesh.Faces[i].IsTriangle)</p>
+              <p><span class="text-muted"> // here the offset point is simply required to be off the face by 0.1 mm but less than 100 (values that are
+                somewhat arbitrary) and the faces must be triangles as the presence of rectangular faces creates issues
+                as we only define 3 points</p>
+              <p>{</p>
+              <p>newpoints.Add(p1);</p>
+              <p>newpoints.Add(p2);</p>
+              <p>newpoints.Add(p3);</p>
+              <p>newpoints.Add(pcenoffset)</p>
+              <p>}</p>
+              <p><span class="text-muted">// the new point list is created out of the original face points as well as the new offset point.</p>
+              <p>}</p>
+              <p>}</p>
+              <p>for (int i = 0; i < newpoints.Count - 3; i = i + 4){</p>
+              <p>newMesh.Vertices.Add(newpoints[i]);</p>
+              <p>newMesh.Vertices.Add(newpoints[i + 1]);</p>
+              <p>newMesh.Vertices.Add(newpoints[i + 2]);</p>
+              <p>newMesh.Vertices.Add(newpoints[i + 3]);</p>
+              <p><span class="text-muted">// In order of how the point types were added to the list, the new point list is separated into 4 categories</p>
+              <p>newMesh.Faces.AddFace(i, i + 1, i + 3);</p>
+              <p>newMesh.Faces.AddFace(i + 1, i + 2, i + 3);</p>
+              <p><span class="text-muted">// those categories are connected in groups of 3 to define new 3 point faces on the new mesh.
+                Specifically I only wanted 2 2 specific faces from each original face, to allow for a small opening</p>
+              <p>}</p>
+              <p>A = mesh;</p>
+              <p><span class="text-muted">// I still export the original mesh for reference</p>
+              <p>B = newMesh;</p>
+              <p><span class="text-muted">// The new mesh consists only of the additional faces created in this script</p>
+             
+
+            </div>
+            <div class="col-md-4 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="h3"></h3>
+                <p class="mb-4"><span class="text-muted">{γ}. The Face Creation Scheme</span></p>
+
+                <div class="mb-5">
+                  <p>Design Intention:</p>
+                  <p>Creation of New Mesh Faces to Create A Non-Flat Facade</p>
+                    <p>By subdividing faces from the original mesh and adding new ones, that begin to intrude inwards on the
+                      surface of the building, the originally flat exterior building surface is transformed, only at a certain
+                      distance from the focus point, causing interest to be drawn towards that point in the building. If the
+                      proximity to the center of the original panel is decreased, the new panel will more aggressively point
+                      towards the focus point</p>
+                      <p>Explanation of Process:</p>
+                    <p>I created a new mesh by creating a list of mesh faces, from which I found the vertices as points and then
+                      formed a new point. This new point stems from the center point as well as factoring in the interest point.
+                      By creating a variable, proximity to center, the scale of the importance of the proximity to center can be
+                      adjusted to be greater -far greater than the interest point.</p>
+                    <p>In a separate for loop every 3 points of 3-point faces is added to the list as well as every offset point of
+                      the center point. In different groupings of 3 points, I am able to make these series of subdivided faces
+                      forming planes that begin to intrude inwards on the surface creating a textured building surface that only
+                      occurs at a certain distances from the interest point.</p>
+                    
+                  
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="site-section pb-0">
+          <div class="container">
+            <div class="row align-items-stretch">
+        <div class="col-md-10 ml-auto" data-aos="fade-up">
+          <p>.</p>
+
+        
+
+          </div>      
+          </div>
+          </div>
+          </div>
+    </section>
+
+
+    <!-- ======= Testimonials Section ======= -->
+    <!-- <section class="section pt-0">
+      <div class="container">
+
+        <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial">
+                  <img src="../../assets/img/person_1.jpg" alt="Image" class="img-fluid">
+                  <blockquote>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
+                      explicabo inventore.</p>
+                  </blockquote>
+                  <p>&mdash; Jean Hicks</p>
+                </div>
+              </div> -->
+            <!-- </div>End testimonial item -->
+
+            <!-- <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial">
+                  <img src="../../assets/img/person_2.jpg" alt="Image" class="img-fluid">
+                  <blockquote>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
+                      explicabo inventore.</p>
+                  </blockquote>
+                  <p>&mdash; Chris Stanworth</p>
+                </div>
+              </div>
+            </div>End testimonial item -->
+
+          <!-- </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+    </section>End Testimonials Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <!-- <div class="row">
+        <div class="col-sm-6">
+          <p class="mb-1">&copy; Copyright MyPortfolio. All Rights Reserved</p>
+          
+        </div>
+        <div class="col-sm-6 social text-md-end">
+          <a href="#"><span class="bi bi-twitter"></span></a>
+          <a href="#"><span class="bi bi-facebook"></span></a>
+          <a href="#"><span class="bi bi-instagram"></span></a>
+          <a href="#"><span class="bi bi-linkedin"></span></a>
+        </div>
+      </div> -->
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<!-- Template Main JS File -->
+  <script src="../../assets/js/main.js"></script>
+
+  <script src="../../shared/nav.js" defer></script>
+</body>
+
+</html>
