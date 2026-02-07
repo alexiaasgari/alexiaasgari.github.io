@@ -78,7 +78,7 @@
 
   const carouselTrack = document.getElementById("carouselTrack");
   const carouselDots = document.getElementById("carouselDots");
-
+ 
   const isPortfolioPage =
     HERO && WORK && categoryList && projectGrid && selectedCategoryLabel &&
     carouselTrack && carouselDots;
