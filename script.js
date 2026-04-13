@@ -1070,10 +1070,10 @@ if (WORK) {
     // Identity (name/title + banner) is always visible now (no staged fade).
     // CV appears next, then we pause a full 2 seconds after the CV finishes.
     // Bio appears next, then categories + grid follow shortly after bio completes.
-    const T_UTILITY = 2000;  // show CV (shortly after landing)
-    const T_CONTEXT = 5200;  // bio starts (CV: 1200ms fade, then 2000ms pause)
-    const T_EXPLORE = 7600;  // categories + grid (shortly after bio completes)
-    const T_CLEANUP = 11000; // remove entrance classes after transitions settle
+    const T_UTILITY = 400;   // show CV quickly
+const T_CONTEXT = 900;   // bio soon after
+const T_EXPLORE = 1400;  // categories + grid
+const T_CLEANUP = 1800;  // cleanup and remove entrance classes
 
     // Kick phases on the next frame so the initial hidden state paints first (prevents no-op transitions).
     window.requestAnimationFrame(() => {
